@@ -1,0 +1,204 @@
+CREATE DATABASE dbcasasan;
+USE dbcasasan;
+CREATE TABLE `trabajadores` (
+  `id_trabajador` int PRIMARY KEY not null auto_increment,
+  `nombre` varchar(255) not null,
+  `apellido` varchar(255) not null,
+  `telefono` int,
+  `correo` varchar(255),
+  `direccion` varchar(255),
+  `funcion` varchar(255),
+  `nacimiento` date,
+  `sueldo` int,
+  `cbu` int
+);
+
+CREATE TABLE `consejo_directivo` (
+  `id_directivo` int PRIMARY KEY not null auto_increment,
+  `nombre` varchar(255),
+  `apellido` varchar(255),
+  `telefono` int,
+  `correo` varchar(255),
+  `direccion` varchar(255),
+  `funcion` varchar(255)
+);
+
+
+
+
+
+
+
+CREATE TABLE `cuentas_bancarias` (
+  `id_cuenta` int PRIMARY KEY not null auto_increment,
+  `banco` varchar(30),
+  `sucursal` varchar(255),
+  `numero_cuenta` int,
+  `tipo` varchar(55),
+  `saldo` int
+);
+
+CREATE TABLE `flujo_de_caja` (
+  `id_pago` int PRIMARY KEY not null auto_increment,
+  `id_cuenta` int,
+  `id_trabajador` int,
+  `monto` int,
+  `tipo` varchar(45)
+);
+
+CREATE TABLE `sedes` (
+  `id_sede` int PRIMARY KEY not null auto_increment,
+  `nombre_sede` varchar(255),
+  `direccion_sede` varchar(255),
+  `correo_sede` varchar(255),
+  `telefono_sede` int,
+  `codigo_postal` int
+);
+
+
+
+
+
+
+CREATE TABLE `miembros` (
+  `id_miembro` int PRIMARY KEY not null auto_increment,
+  `nombre` varchar(255) not null,
+  `apellido` varchar(255) not null,
+  `correo` varchar(255),
+  `telefono` int,
+  `barrio` varchar(30),
+  `nacimiento` date,
+  `centro_jubilados` varchar(30)
+);
+
+CREATE TABLE `actividades` (
+  `id_actividad` int PRIMARY KEY not null auto_increment,
+  `nombre_actividad` varchar(255) not null,
+  `id_sede` int,
+  `id_trabajador` int,
+  `día_actividad` varchar(30),
+  `horario_actividad` time,
+  `capacidad_taller` int
+);
+
+CREATE TABLE `inscripciones` (
+  `id_inscripcion` int PRIMARY KEY not null auto_increment,
+  `id_miembro` int,
+  `id_actividad` int,
+  `fecha_inscripcion` date
+);
+
+
+
+
+
+
+ALTER TABLE inscripciones
+ADD CONSTRAINT FK_miembro
+FOREIGN KEY (id_miembro) REFERENCES miembros(id_miembro);
+
+ALTER TABLE inscripciones
+ADD CONSTRAINT FK_actividad
+FOREIGN KEY (id_actividad) REFERENCES actividades(id_actividad);
+
+ALTER TABLE flujo_de_caja
+ADD CONSTRAINT FK_cuenta
+FOREIGN KEY (id_cuenta) REFERENCES cuentas_bancarias(id_cuenta);
+
+ALTER TABLE flujo_de_caja
+ADD CONSTRAINT FK_trabajador
+FOREIGN KEY (id_trabajador) REFERENCES trabajadores(id_trabajador);
+
+ALTER TABLE actividades
+ADD CONSTRAINT FK_sede
+FOREIGN KEY (id_sede) REFERENCES sedes(id_sede);
+
+
+ALTER TABLE actividades
+ADD CONSTRAINT FK_trabajador_actividades
+FOREIGN KEY (id_trabajador) REFERENCES trabajadores(id_trabajador);
+
+
+
+
+
+USE dbcasasan;
+SET FOREIGN_KEY_CHECKS=0;
+
+INSERT INTO consejo_directivo(nombre,apellido,telefono,correo,direccion,funcion)
+VALUES
+('Mercedes','Frassia',1148961033,'mfrassia@casasan.com','Vieytes 848','Presidenta'),
+('Ana','Cardozo',1166784019,'acardozo@casasan.com','Pi y Margall 480','Vicepresidenta'),
+('Carlos','March',1187154093,'cmarch@casasan.com','Vieytes 848','Tesorero'),
+('Graciela','Novoa',1149701177,'gnovoa@casasan.com','Gualeguay 639','Secretaria'),
+('Marcela','Fatone',1125941036,'mfatone@casasan.com','Vieytes 848','Directora de desarrollo institucional'),
+('Mercedes','Ferreria',1156710033,'mferreria@casasan.com','Vieytes 848','Coordinadora de Proyectos');
+
+INSERT INTO cuentas_bancarias(banco,sucursal,numero_cuenta,tipo,saldo)
+VALUES
+('Santander', 'Barracas',10640, 'cuenta corriente',65000000),
+('Nación', 'La Boca',94870330, 'cuenta corriente',125020200),
+('Nación', 'La Boca',94871471, 'caja de ahorro',100000),
+('Galicia', 'San Telmo',2594470, 'cuenta corriente',5400000),
+('Frances', 'Parque Patricios',55891005, 'cuenta corriente',12430486);
+
+INSERT INTO sedes(nombre_sede,direccion_sede,correo_sede,telefono_sede,codigo_postal)
+VALUES
+('Sede Olavarría', 'Olavarría 815', 'sede_casasan@casasan.com', 1164910133,1162),
+('Sede Punto Digital Almirante Brown', 'Avenida Almirante Brown 1351', 'puntodigital_casasan@casasan.com', 1154602388,1159),
+('Oficina', 'Avenida Regimiento de Patricios 96', 'oficina_casasan@casasan.com', 1159442197,1265);
+
+
+
+
+
+INSERT INTO actividades(nombre_actividad,id_sede,id_trabajador,día_actividad,horario_actividad,capacidad_taller)
+VALUES
+('Danzas arabes', 1, 26, 'Martes', '18:00:00',20),
+('Consulta psicológica', 1, 19, 'Lunes y Sábado', '14:00:00',1),
+('Tango', 1, 6, 'Lunes y Miércoles y Viernes', '16:00:00',10),
+('Kung Fu', 1, 33, 'Martes y Jueves', '18:00:00',16),
+('Peluquería', 1, 3, 'Lunes a Viernes', '15:00:00',100),
+('Urbano', 1, 10, 'Lunes y Miércoles', '17:00:00',20),
+('Folklore', 1, 16, 'Miércoles y Viernes', '19:00:00',25),
+('Teatro', 1, 7, ' Martes y Jueves ', '20:00:00',30),
+('Alfabetización Digital', 2, 15, 'Lunes y Miércoles', '18:00:00',20),
+('Fotografía', 2, 12, 'Lunes y Miércoles', '18:00:00',10),
+('Baile adultos', 1, 8, 'Martes y Jueves', '18:00:00',20),
+('Manicura y pedicuría', 1, 9, ' Miércoles y Viernes', '15:00:00',100),
+('Dibujo', 2, 11, 'Martes y Jueves', '17:00:00',14),
+('Murga', 1, 19, 'Lunes y Miércoles y Viernes', '20:00:00',20),
+('Apoyo escolar', 2, 25, 'Lunes y Miércoles y Viernes', '17:00:00',10),
+('Robotica', 2, 23, 'Martes y Jueves', '16:00:00',20),
+('Diseño de páginas web', 2, 26, 'Miércoles y Viernes', '18:00:00',20),
+('Freestyle', 2, 27, 'Martes y Viernes', '17:00:00',30),
+('Zumba', 1, 28, 'Martes y Jueves', '19:00:00',30),
+('Bingo para adultos', 1, 39, 'Lunes y Miércoles y viernes', '15:00:00',40),
+('Panaderia', 1, 38, 'Martes y Jueves', '15:00:00',20);
+
+
+
+
+
+CREATE VIEW administrativos AS
+SELECT id_trabajador, nombre, apellido FROM dbcasasan.trabajadores
+WHERE funcion LIKE 'Administrativo'
+ORDER BY (apellido) ASC;
+
+CREATE VIEW actividades_olavarria AS
+SELECT nombre_actividad, horario_actividad,capacidad_talleractividades_olavarria FROM actividades
+WHERE id_sede LIKE '1';
+
+CREATE VIEW pagos_sobre_promedio AS
+SELECT id_pago, id_trabajador, monto FROM flujo_de_caja
+WHERE monto > (SELECT AVG(monto)FROM flujo_de_caja);
+
+CREATE VIEW miembros_menores AS
+SELECT id_miembro, nombre, apellido, nacimiento
+FROM miembros
+WHERE nacimiento > '2000-01-01'
+ORDER BY(apellido);
+
+CREATE VIEW total_pagado_colaborador_21 AS 
+SELECT SUM(monto) FROM flujo_de_caja
+WHERE id_trabajador like '21';
